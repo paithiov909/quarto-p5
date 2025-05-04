@@ -1,0 +1,94 @@
+---
+title: "p5.js in Quarto"
+filters:
+  - p5
+---
+
+For shaders, labels must follow the format `//| label: name.ext`, where `ext` is `.vert` or `.frag`. The `name` goes to the `id` attribute of the `<script>` tag.
+
+Here's an example:
+
+```{=html}
+<div id="my-canvas"></div>
+```
+
+---
+
+::: {.panel-tabset}
+
+## JS
+
+```js
+let atomosphere;
+
+function setup() {
+  let cnv = createCanvas(640, 480, WEBGL);
+  // If you don't need specify a parent, you can leave this out.
+  cnv.parent("my-canvas");
+
+  // Create a p5.Shader object.
+  let vert = document.getElementById("vertSrc").textContent;
+  let frag = document.getElementById("fragSrc").textContent;
+  atomosphere = createShader(vert, frag);
+
+  atomosphere.setUniform("uSunPos", [0, 0, -1]);
+  shader(atomosphere);
+
+  describe("Renders sky colors with Rayleigh and Mie scattering");
+}
+
+function draw() {
+  atomosphere.setUniform("uSunPos", [0, cos(frameCount / 100) * 0.3 + 0.2, -1]);
+  noStroke();
+  plane(640, 480);
+}
+```
+
+## Vertex Shader
+
+
+```glsl
+//| label: vertSrc.vert
+attribute vec3 aPosition;
+varying vec3 vPosition;
+
+void main() {
+    gl_Position = vec4(aPosition, 1.0);
+    vPosition = aPosition;
+}
+```
+
+## Fragment Shader
+
+```glsl
+//| label: fragSrc.frag
+precision highp float;
+uniform vec3 uSunPos;
+
+varying vec3 vPosition;
+
+{{< include atomosphere.glsl >}}
+
+void main() {
+    vec3 color = atmosphere(
+        normalize(vPosition),           // normalized ray direction
+        vec3(0,6372e3,0),               // ray origin
+        uSunPos,                        // position of the sun
+        22.0,                           // intensity of the sun
+        6371e3,                         // radius of the planet in meters
+        6471e3,                         // radius of the atmosphere in meters
+        vec3(5.5e-6, 13.0e-6, 22.4e-6), // Rayleigh scattering coefficient
+        21e-6,                          // Mie scattering coefficient
+        8e3,                            // Rayleigh scale height
+        1.2e3,                          // Mie scale height
+        0.758                           // Mie preferred scattering direction
+    );
+
+    // Apply exposure.
+    color = 1.0 - exp(-1.0 * color);
+
+    gl_FragColor = vec4(color, 1);
+}
+```
+
+:::

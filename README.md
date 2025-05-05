@@ -25,6 +25,5 @@ To embed a p5.js sketch, define your HTML container, JavaScript sketch, and opti
 
 ## Notes
 
-- Only one sketch (i.e., one `setup()` function) is supported per document.
 - Missing or invalid shader labels will result in a warning block in the output.
 - It does not attempt to validate GLSL or JavaScript syntax.

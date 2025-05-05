@@ -10,6 +10,13 @@ quarto add paithiov909/quarto-p5
 ```
 This will install the extension under the `_extensions` subdirectory. If you're using version control, you will want to check in this directory.
 
+Then, activate the extension by adding the following lines to the YAML front matter:
+
+```yaml
+filters:
+  - p5
+```
+
 
 ## Usage
 

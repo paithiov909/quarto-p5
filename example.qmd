@@ -4,7 +4,8 @@ filters:
   - p5
 ---
 
-For shaders, labels must follow the format `//| label: name.ext`, where `ext` is `.vert` or `.frag`. The `name` goes to the `id` attribute of the `<script>` tag.
+For shaders, labels must follow the format `//| label: name.ext`, where `ext` is `.vert` or `.frag`.
+The `name` goes to the `id` attribute of the `<script>` tag.
 
 Here's an example:
 
@@ -45,7 +46,6 @@ function draw() {
 ```
 
 ## Vertex Shader
-
 
 ```glsl
 //| label: vertSrc.vert
